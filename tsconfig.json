@@ -1,0 +1,17 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "types": ["node", "mocha", "chai-jest-snapshot"],
+    "rootDir": "./src",
+    "outDir": "build",
+    "target": "es5",
+    "strictNullChecks": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*_test.ts",
+    "src/**/snapshots/*.ts"
+  ]
+}
