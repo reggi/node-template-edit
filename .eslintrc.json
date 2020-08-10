@@ -4,7 +4,8 @@
     "mocha": true
   },
   "rules": {
-    "no-process-exit": "off"
+    "no-process-exit": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "ignorePatterns": ["build", "src/snapshots", "examples"]
 }
