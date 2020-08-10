@@ -156,13 +156,13 @@ export class Template {
       if (cmd === COMMIT) {
         const json = Template.deepMerge(templateFileJSON, iFileJSON);
         const output = JSON.stringify(json, null, 2);
-        await Template.mkdirp(path.dirname(output));
+        await Template.mkdirp(path.dirname(templateFile));
         await fs.promises.writeFile(templateFile, output, 'utf-8');
       }
       if (cmd === PULL) {
         const json = Template.deepMerge(fileJSON, iTemplateFileJSON);
         const output = JSON.stringify(json, null, 2);
-        await Template.mkdirp(path.dirname(output));
+        await Template.mkdirp(path.dirname(file));
         await fs.promises.writeFile(file, output, 'utf-8');
       }
     });
