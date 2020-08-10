@@ -18,7 +18,8 @@
         "devDependencies",
         "repository",
         "description",
-        "usage"
+        "usage",
+        "bin"
       ]
     }
   ]
