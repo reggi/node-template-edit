@@ -9,6 +9,8 @@ const PULL = 'pull';
 
 const defaultIgnore = ['.git', '.template'];
 
+type Any = {};
+
 export interface ConfigJson {
   name: string;
   ignoreKeys: string[];
@@ -123,14 +125,14 @@ export class Template {
     const chopped = templateFile.replace(new RegExp(`^${templateDir}`), '');
     return path.join(location, chopped);
   }
-  static omit(keys: string[], obj: {[key: string]: any}): {[key: string]: any} {
+  static omit(keys: string[], obj: {[key: string]: Any}): {[key: string]: Any} {
     return Object.keys(obj).reduce((prev, curr) => {
       const value = obj[curr];
       if (!keys.includes(curr)) return {...prev, [curr]: value};
       return prev;
     }, {});
   }
-  static deepMerge(target: {[key: string]: any}, source: {[key: string]: any}) {
+  static deepMerge(target: {[key: string]: Any}, source: {[key: string]: Any}) {
     for (const key of Object.keys(source)) {
       if (source[key] instanceof Object) {
         Object.assign(
