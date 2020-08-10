@@ -1,6 +1,6 @@
 {
   "name": "template-edit",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A CLI tool designed to commit / pull template changes.",
   "repository": {
     "type": "git",
