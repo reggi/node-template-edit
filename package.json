@@ -1,15 +1,15 @@
 {
-  "name": "@reggi/node-generate",
-  "version": "1.0.6",
-  "description": "This is a starter project for TypeScript and Node.js",
+  "name": "template-edit",
+  "version": "0.0.1",
+  "description": "A CLI tool designed to commit / pull template changes.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/reggi/node-generate.git"
+    "url": "https://github.com/reggi/node-template-edit.git"
   },
   "license": "ISC",
   "author": "Thomas Reggi",
-  "main": "./build/mod.js",
-  "bin": "./build/mod_cli.js",
+  "main": "./build/template.js",
+  "bin": "./build/template_cli.js",
   "scripts": {
     "build": "rm -rf ./build/ && tsc",
     "coverage:open": "open ./coverage/index.html",

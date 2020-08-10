@@ -21,6 +21,7 @@ export interface Config {
 }
 
 export class Template {
+  static execAsync = execAsync;
   static async readJson(filePath: string) {
     try {
       const content = await fs.promises.readFile(filePath, 'utf8');

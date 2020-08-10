@@ -142,6 +142,10 @@ const spec: Spec = [
 
 describe('Template', () => {
   context('.cli()', () => {
+    after(async () => {
+      await Template.execAsync('git checkout main -- ./examples/ ');
+    });
+
     spec.forEach(spec => {
       it(`should use "${spec.dir}"`, async () => {
         const cwd = path.join(__dirname, `../examples/${spec.dir}`);
