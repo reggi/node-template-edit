@@ -1,0 +1,9 @@
+{
+  "ignore": [
+    ".git"
+  ],
+  "json": [{
+    "name": "package.json",
+    "ignoreKeys": [ "version" ]
+  }]
+}

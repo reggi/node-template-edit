@@ -1,0 +1,6 @@
+{
+  "source": "https://github.com/reggi/example-test-template.git",
+  "ignore": [
+    ".git"
+  ]
+}

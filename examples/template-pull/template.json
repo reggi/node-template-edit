@@ -1,0 +1,10 @@
+{
+  "source": "https://github.com/reggi/example-test-template.git",
+  "ignore": [
+    ".git"
+  ],
+  "json": [{
+    "name": "package.json",
+    "ignoreKeys": ["name", "version"]
+  }]
+}

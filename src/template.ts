@@ -4,6 +4,11 @@ import {exec} from 'child_process';
 import * as util from 'util';
 const execAsync = util.promisify(exec);
 
+const COMMIT = 'commit';
+const PULL = 'pull';
+
+const defaultIgnore = ['.git', '.template'];
+
 export interface ConfigJson {
   name: string;
   ignoreKeys: string[];
@@ -39,7 +44,12 @@ export class Template {
     const gitignore = await Template.readGitIgnore(ignorePath);
     if (!config.source) throw new Error('config is missing source');
     const ignoreJson = (config.json || []).map((j: ConfigJson) => j.name);
-    const ignore = [...gitignore, ...ignoreJson, ...(config.ignore || [])];
+    const ignore = [
+      ...gitignore,
+      ...ignoreJson,
+      ...defaultIgnore,
+      ...(config.ignore || []),
+    ];
     return {...config, ignore} as Config;
   }
   static async files(location: string, ignore: string[]) {
@@ -73,14 +83,44 @@ export class Template {
     await Promise.all(promises);
     await fs.promises.rmdir(location);
   }
+  static async mkdirp(location: string) {
+    location = path.resolve(location);
+    const locationSplit = location.split(path.sep);
+    return locationSplit
+      .map((i, index) => {
+        return path.join('/', ...locationSplit.slice(0, index + 1));
+      })
+      .filter(i => i !== '/')
+      .reduce((resolve, segment) => {
+        return resolve.then(async () => {
+          try {
+            await fs.promises.stat(segment);
+          } catch (e) {
+            await fs.promises.mkdir(segment);
+          }
+        });
+      }, Promise.resolve());
+  }
   static async clone(repo: string, location: string) {
-    const templateDir = path.join(location, '.template');
-    await Template.rmdir(templateDir);
-    return execAsync(`git clone ${repo} ${templateDir}`);
+    try {
+      const templateDir = path.join(location, '.template');
+      await Template.rmdir(templateDir);
+    } catch (e) {
+      // noop
+    }
+    return execAsync(`git -C ${location} clone ${repo} .template`);
   }
   static templateFile(file: string, location: string) {
     const chopped = file.replace(new RegExp(`^${location}`), '');
-    return path.join('.template', chopped);
+    return path.join(location, path.join('.template', chopped));
+  }
+  static normalFile(
+    templateFile: string,
+    templateDir: string,
+    location: string
+  ) {
+    const chopped = templateFile.replace(new RegExp(`^${templateDir}`), '');
+    return path.join(location, chopped);
   }
   static omit(keys: string[], obj: {[key: string]: any}): {[key: string]: any} {
     return Object.keys(obj).reduce((prev, curr) => {
@@ -99,7 +139,7 @@ export class Template {
       }
     }
     // Join `target` and modified `source`
-    Object.assign(target || {}, source);
+    Object.assign(target, source);
     return target;
   }
   static async mergeJson(json: Config['json'], location: string, cmd: string) {
@@ -112,14 +152,16 @@ export class Template {
       const templateFileJSON = await Template.readJson(templateFile);
       const iFileJSON = Template.omit(ignoreKeys, fileJSON);
       const iTemplateFileJSON = Template.omit(ignoreKeys, templateFileJSON);
-      if (cmd === 'commit') {
+      if (cmd === COMMIT) {
         const json = Template.deepMerge(templateFileJSON, iFileJSON);
         const output = JSON.stringify(json, null, 2);
+        await Template.mkdirp(path.dirname(output));
         await fs.promises.writeFile(templateFile, output, 'utf-8');
       }
-      if (cmd === 'push') {
+      if (cmd === PULL) {
         const json = Template.deepMerge(fileJSON, iTemplateFileJSON);
         const output = JSON.stringify(json, null, 2);
+        await Template.mkdirp(path.dirname(output));
         await fs.promises.writeFile(file, output, 'utf-8');
       }
     });
@@ -127,20 +169,24 @@ export class Template {
   }
   static async main(location: string, cmd: string) {
     const {source, ignore, json} = await Template.config(location);
-    const files = await Template.files(location, ignore);
     await Template.clone(source, location);
     await Template.mergeJson(json, location, cmd);
-    if (cmd === 'commit') {
+    if (cmd === COMMIT) {
+      const files = await Template.files(location, ignore);
       const promises = files.map(async file => {
         const templateFile = Template.templateFile(file, location);
+        await Template.mkdirp(path.dirname(templateFile));
         await fs.promises.copyFile(file, templateFile);
       });
       return await Promise.all(promises);
     }
-    if (cmd === 'pull') {
-      const promises = files.map(async file => {
-        const templateFile = Template.templateFile(file, location);
-        await fs.promises.rename(templateFile, file);
+    if (cmd === PULL) {
+      const templateDir = path.join(location, '.template');
+      const files = await Template.files(templateDir, ignore);
+      const promises = files.map(async templateFile => {
+        const file = Template.normalFile(templateFile, templateDir, location);
+        await Template.mkdirp(path.dirname(file));
+        await fs.promises.copyFile(templateFile, file);
       });
       return Promise.all(promises);
     }
