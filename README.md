@@ -1,20 +1,20 @@
-# node-generate
+# node-template-edit
 
-[![semantic release](https://github.com/reggi/node-generate/workflows/semantic%20release/badge.svg)](https://github.com/reggi/node-generate/actions?query=workflow%3A%22semantic+release%22) [![coverage](https://github.com/reggi/node-generate/workflows/coverage/badge.svg)](https://reggi.github.io/node-generate/) [![npm](https://badge.fury.io/js/%40reggi%2Fnode-generate.svg)](https://www.npmjs.com/package/@reggi/node-generate)
+[![semantic release](https://github.com/reggi/node-template-edit/workflows/semantic%20release/badge.svg)](https://github.com/reggi/node-template-edit/actions?query=workflow%3A%22semantic+release%22) [![coverage](https://github.com/reggi/node-template-edit/workflows/coverage/badge.svg)](https://reggi.github.io/node-template-edit/) [![npm](https://badge.fury.io/js/template-edit.svg)](https://www.npmjs.com/package/template-edit)
 
-This is a starter project for TypeScript and Node.js
+A CLI tool designed to commit / pull template changes.
 
 ## Install
 
 ```
-npm install @reggi/node-generate -g
-node-generate
+npm install template-edit -g
+template-edit
 ```
 
 ## Use directly via `npx`
 
 ```
-npx @reggi/node-generate
+npx template-edit
 ```
 
 <!-- anything below this line will be safe from template removal -->
