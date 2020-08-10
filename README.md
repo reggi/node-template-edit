@@ -8,13 +8,13 @@ A CLI tool designed to commit / pull template changes.
 
 ```
 npm install template-edit -g
-template-edit
+template-edit <commit|pull>
 ```
 
 ## Use directly via `npx`
 
 ```
-npx template-edit
+npx template-edit <commit|pull>
 ```
 
 <!-- anything below this line will be safe from template removal -->
